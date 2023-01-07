@@ -8,12 +8,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
+    // SQL query for creating the CUSTOMER table
     private static final String CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS CUSTOMER(" +
             "ID INT AUTO_INCREMENT PRIMARY KEY, " +
             "NAME VARCHAR(255) NOT NULL UNIQUE, " +
             "RENTED_CAR_ID INT DEFAULT NULL, " +
             "CONSTRAINT fk_car FOREIGN KEY (RENTED_CAR_ID)" +
             "REFERENCES CAR(ID))";
+    // SQL queries for inserting a new customer into the CUSTOMER table
     private static final String CREATE_CUSTOMER = "INSERT INTO CUSTOMER (NAME) VALUES(?)";
     private static final String GET_ALL_CUSTOMERS = "SELECT * FROM CUSTOMER";
     private static final String GET_RENTED_CAR = "SELECT * FROM CUSTOMER WHERE ID = ?";
@@ -22,15 +24,20 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
     private static final String RETURN_CAR = "UPDATE CUSTOMER SET RENTED_CAR_ID = NULL WHERE ID = ?";
     private static final String GET_CUSTOMER = "SELECT * FROM CUSTOMER WHERE ID = ?";
 
+    //Constructor for CustomerDaoH2Impl
+    //@param connection a JDBC Connection object
     public CustomerDaoH2Impl(Connection connection) {
         super(connection);
     }
 
+    //Overrides the getCreateTableSQL method in BaseDao
+    //returns the SQL query for creating the CUSTOMER table
     @Override
     protected String getCreateTableSQL() {
         return CREATE_TABLE_SQL;
     }
 
+    //Retrieves all rows from the CUSTOMER table and returns customer
     @Override
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new LinkedList<>();
@@ -48,6 +55,7 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
         return customers;
     }
 
+    //Overrider the getAllRentedCars() and returns cars
     @Override
     public List<Integer> getAllRentedCars() {
         List<Integer> cars = new LinkedList<>();
@@ -66,6 +74,7 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
         return cars;
     }
 
+    //Overrides createCustomer() updates customer statement
     @Override
     public void createCustomer(String customer) {
         try (PreparedStatement stmt = connection.prepareStatement(CREATE_CUSTOMER)) {
@@ -76,6 +85,7 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
         }
     }
 
+    //Overrides rentCar() to update car statements
     @Override
     public void rentCar(int carId, int customerId) {
         try (PreparedStatement stmt = connection.prepareStatement(RENT_CAR)) {
@@ -87,6 +97,7 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
         }
     }
 
+    //A method to update a returned car
     public void returnCar(int carId, int customerId) {
         try (PreparedStatement stmt = connection.prepareStatement(RETURN_CAR)) {
             stmt.setString(1, String.valueOf(customerId));
@@ -96,6 +107,7 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
         }
     }
 
+    //Overrides myRentedCarId() and returns car id
     @Override
     public int myRentedCarId(int customerId) {
         try (PreparedStatement stmt = connection.prepareStatement(GET_RENTED_CAR)) {
@@ -110,6 +122,7 @@ public class CustomerDaoH2Impl extends BaseDao implements CustomerDao {
         return 0;
     }
 
+    //Method to retrieve customer id
     public Customer getCustomer(int customerId) {
         try (PreparedStatement stmt = connection.prepareStatement(GET_CUSTOMER)) {
             stmt.setString(1, String.valueOf(customerId));
