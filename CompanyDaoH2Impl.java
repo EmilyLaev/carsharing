@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+//Concrete implementation of the CompanyDao interface that uses a database connection
+//to execute SQL queries and perform CRUD operations on a COMPANY table.
 public class CompanyDaoH2Impl extends BaseDao implements CompanyDao {
+    // SQL statement for creating a COMPANY table in the database.
     private static final String CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS COMPANY " +
             "(ID INT AUTO_INCREMENT PRIMARY KEY, " +
             " NAME VARCHAR(255) NOT NULL UNIQUE)";
@@ -15,10 +18,12 @@ public class CompanyDaoH2Impl extends BaseDao implements CompanyDao {
     private static final String CREATE_COMPANY = "INSERT INTO COMPANY (NAME) VALUES(?)";
     private static final String GET_COMPANY = "SELECT * FROM COMPANY WHERE ID = ?";
 
+    //Constructor that takes a Connection object and passes it to the superclass's constructor.
     public CompanyDaoH2Impl(Connection connection) {
         super(connection);
     }
 
+    //Overrides the getCreateTableSQL() method from the superclass and returns the CREATE_TABLE_SQL constant.
     @Override
     protected String getCreateTableSQL() {
         return CREATE_TABLE_SQL;
@@ -39,6 +44,7 @@ public class CompanyDaoH2Impl extends BaseDao implements CompanyDao {
         return companies;
     }
 
+    //Overrides the getCompany() method and returns the company object
     @Override
     public Company getCompany(int id) {
         try (PreparedStatement stmt = connection.prepareStatement(GET_COMPANY)) {
@@ -54,6 +60,7 @@ public class CompanyDaoH2Impl extends BaseDao implements CompanyDao {
         return null;
     }
 
+    //Overrides the createCompany to create a different company with only a name
     @Override
     public void createCompany(String company) {
 
