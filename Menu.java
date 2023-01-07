@@ -8,6 +8,12 @@ public class Menu {
 
     public static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Allows the user to view and create cars for a given company.
+     * @param carDaoH2 object for performing operations on the CARS table in the database
+     * @param companyDaoH2 object for performing operations on the COMPANIES table in the database
+     * @param companyId ID of the company to manage cars for
+     */
     public static void managementCar(CarDaoH2Impl carDaoH2, CompanyDaoH2Impl companyDaoH2, int companyId) {
         Scanner scanner = new Scanner(System.in);
         if (companyId > 0) {
@@ -17,6 +23,7 @@ public class Menu {
             return;
         }
 
+        //An infinte for loop to print car list and for user to enter car name
         for (; ; ) {
             if (companyDaoH2.getAllCompanies().size() >= companyId) {
                 MenuPrinter.companyMenu();
@@ -48,7 +55,9 @@ public class Menu {
         }
     }
 
-
+    //This method allows a user to manage companies and cars in a database.
+    // The method takes two implementation classes for interfaces, CompanyDao and CarDao,
+    // as parameters in order to interact with the database.
     public static void managementCompany(CompanyDaoH2Impl companyDaoH2, CarDaoH2Impl carDaoH2) {
         Scanner scanner = new Scanner(System.in);
         for (; ; ) {
@@ -77,6 +86,7 @@ public class Menu {
         }
     }
 
+    //A method for user to enter ner customer name
     public static void managementCreateCustomer(CustomerDaoH2Impl customerDaoH2) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the customer name:");
@@ -84,6 +94,9 @@ public class Menu {
         System.out.println("The customer was added!\n");
     }
 
+    // This method allows a user to manage customers in a database.
+    // The method takes three implementation classes for interfaces, CustomerDao, CompanyDao, and CarDao,
+    // as parameters in order to interact with the database.
     public static void managementCustomerMenu(CustomerDaoH2Impl customerDaoH2,
                                               CompanyDaoH2Impl companyDaoH2, CarDaoH2Impl carDaoH2) {
         if (customerDaoH2.getAllCustomers().size() == 0) {
@@ -100,13 +113,20 @@ public class Menu {
         }
     }
 
+    // This method allows a user to manage customers in a database.
+    // The method takes four parameters,three implementation classes for interfaces, CustomerDao, CompanyDao, and CarDao,
+    // and a Customer object.
     public static void managementCustomer(CustomerDaoH2Impl customerDaoH2,
                                           CompanyDaoH2Impl companyDaoH2, CarDaoH2Impl carDaoH2, Customer customer) {
+        // Enter an infinite loop to continuously prompt the user for a choice
         for (; ; ) {
             MenuPrinter.customerMenu();
             switch (userChoice()) {
                 case 0:
                     return;
+                    
+                // Check if there are any companies in the database
+                // If there are no companies, print a message and go back to the beginning of the loop
                 case 1:
                     if (companyDaoH2.getAllCompanies().size() == 0) {
                         System.out.println("The company list is empty!\n");
@@ -130,6 +150,9 @@ public class Menu {
                         }
                     }
                     break;
+                
+                // Get the latest version of the customer object from the database
+                // Check if the customer has a car rented
                 case 2:
                     customer = customerDaoH2.getCustomer(customer.getId());
                     if (customer.getCarId() == 0) {
@@ -138,6 +161,7 @@ public class Menu {
                         returnCar(customerDaoH2, customer);
                     }
                     break;
+                //Get the latest version of the customer object from the database
                 case 3:
                     customer = customerDaoH2.getCustomer(customer.getId());
                     if (customer.getCarId() == 0) {
@@ -156,6 +180,13 @@ public class Menu {
 
     }
 
+    //This method allows a user to rent a car from a specific company in a database.
+    // The method takes four parameters: three implementation classes for interfaces, CarDao, CustomerDao,
+    // and objects of type Company and Customer.
+    // Filter the list of Car objects to exclude any cars that are already rented
+    // Check if the filtered list of Car objects is empty
+    // If the list is empty, print a message and return
+    // If the list is not empty, print out a list of the available cars and allow the user to choose one
     private static void managementRentCar(CarDaoH2Impl carDaoH2,
                                           CustomerDaoH2Impl customerDaoH2,
                                           Company company, Customer customer) {
@@ -193,17 +224,23 @@ public class Menu {
         }
     }
 
+    // This method allows a user to rent a car in a database.
+    // The method takes three parameters: an implementation class for an interface, CustomerDao,
+    // an object of type Car, and an object of type Customer.
     private static void rentCar(CustomerDaoH2Impl customerDaoH2, Car car, Customer customer) {
         customerDaoH2.rentCar(car.getId(), customer.getId());
         System.out.println("You rented '" + car.getName() + "'");
         System.out.println();
     }
 
+    // This method allows a user to return a rented car in a database.
+    // The method takes two parameters: an implementation class for an interface, CustomerDao, and an object of type Customer.
     private static void returnCar(CustomerDaoH2Impl customerDaoH2, Customer customer) {
         customerDaoH2.returnCar(customer.getCarId(), customer.getId());
         System.out.println("You've returned a rented car!\n");
     }
 
+    // This method returns the next integer inputted by the user using a Scanner object.
     public static int userChoice() {
         return scanner.nextInt();
     }
