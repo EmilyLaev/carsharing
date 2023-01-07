@@ -1,5 +1,7 @@
 package carsharing;
 
+//Java bean that represents a car in the car-sharing service
+//Unique ID of the car, Name of the car and ID of the company that owns the car.
 public class Car {
     private int id;
     private String name;
@@ -13,6 +15,7 @@ public class Car {
 
     }
 
+    //The getters and setters for Id, Name and company id
     public int getId() {
         return id;
     }
