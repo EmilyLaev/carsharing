@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+//SQL statement for creating a CAR table in the database.
 public class CarDaoH2Impl extends BaseDao implements CarDao {
     private static final String CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS CAR" +
             "(ID INT AUTO_INCREMENT PRIMARY KEY, " +
@@ -14,6 +15,9 @@ public class CarDaoH2Impl extends BaseDao implements CarDao {
             "COMPANY_ID INT NOT NULL, " +
             "CONSTRAINT fk_company FOREIGN KEY (COMPANY_ID)" +
             "REFERENCES COMPANY(ID))";
+    
+    //SQL query for selecting all cars that belong to a specific company.
+    //SQL statement and queries for inserting car information.
     private static final String GET_CARS = "SELECT * FROM CAR WHERE COMPANY_ID = ?";
     private static final String CREATE_CAR = "INSERT INTO CAR (NAME, COMPANY_ID) VALUES(?, ?)";
     private static final String GET_CAR = "SELECT * FROM CAR WHERE ID = ?";
@@ -23,11 +27,14 @@ public class CarDaoH2Impl extends BaseDao implements CarDao {
         super(connection);
     }
 
+    //Overrides the getCreateTableSQL() method from the superclass and returns the CREATE_TABLE_SQL constant.
     @Override
     protected String getCreateTableSQL() {
         return CREATE_TABLE_SQL;
     }
 
+    // Returns a list of Car objects that belong to a specific company, identified by the companyId argument.
+    //Uses a PreparedStatement and a ResultSet to execute a SELECT query on the database.
     @Override
     public List<Car> getCars(int companyId) {
         List<Car> companies = new LinkedList<>();
@@ -46,6 +53,7 @@ public class CarDaoH2Impl extends BaseDao implements CarDao {
         return companies;
     }
 
+    //Override to create car object with arguments car and id number
     @Override
     public void createCar(String car, int companyId) {
 
@@ -58,6 +66,7 @@ public class CarDaoH2Impl extends BaseDao implements CarDao {
         }
     }
 
+    //Override to get car using the carId number
     @Override
     public Car getCar(int carId) {
         try (PreparedStatement stmt = connection.prepareStatement(GET_CAR)) {
@@ -75,5 +84,4 @@ public class CarDaoH2Impl extends BaseDao implements CarDao {
         }
         return null;
     }
-
 }
